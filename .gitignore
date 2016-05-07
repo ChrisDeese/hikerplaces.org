@@ -24,3 +24,4 @@ project/plugins/project/
 # play
 logs
 libexec
+*___jb_tmp___
