@@ -1,9 +1,13 @@
 # --- !Ups
 
-create table "CAT" ("NAME" VARCHAR NOT NULL PRIMARY KEY,"COLOR" VARCHAR NOT NULL);
-create table "DOG" ("NAME" VARCHAR NOT NULL PRIMARY KEY,"COLOR" VARCHAR NOT NULL);
+create table "USER" (
+    "ID" bigint auto_increment primary key,
+    "USERNAME" varchar not null,
+    "PASSWORD" varchar not null
+);
+
+insert into USER(USERNAME, PASSWORD) values ('hikerbot', 'asdf');
 
 # --- !Downs
 
-drop table "CAT";
-drop table "DOG";
+drop table "USER";
