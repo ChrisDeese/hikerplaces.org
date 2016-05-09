@@ -1,6 +1,6 @@
 package dao
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import models.User
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -9,7 +9,7 @@ import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 
-//@Singleton()
+@Singleton()
 class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
