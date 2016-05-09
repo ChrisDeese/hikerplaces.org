@@ -13,6 +13,7 @@ create table "AUTH_TOKEN" (
 );
 
 insert into USER(USERNAME, PASSWORD) values ('hikerbot', 'asdf');
+insert into AUTH_TOKEN(TOKEN, USER_ID) values ('token', (select ID from USER where USERNAME = 'hikerbot'))
 
 # --- !Downs
 

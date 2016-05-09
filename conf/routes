@@ -5,10 +5,8 @@
 # Home page
 GET     /                           controllers.Application.index
 
-# Home page
-#POST    /insert/cat                 controllers.Application.insertCat
-#POST    /insert/dog                 controllers.Application.insertDog
-
+# User api
+POST    /api/login                  controllers.Application.login
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

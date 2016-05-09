@@ -1,18 +1,20 @@
 package dao
 
-import scala.concurrent.Future
 import javax.inject.Inject
 
 import models.User
-import play.api.db.slick.DatabaseConfigProvider
-import play.api.db.slick.HasDatabaseConfigProvider
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import slick.driver.JdbcProfile
 
-class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
+import scala.concurrent.Future
+
+//@Singleton()
+class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
   private val Users = TableQuery[UserTable]
+  private val AuthTokens = TableQuery[AuthTokenTable]
 
   def all(): Future[Seq[User]] = db.run(Users.result)
 
