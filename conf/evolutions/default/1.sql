@@ -18,3 +18,4 @@ insert into AUTH_TOKEN(TOKEN, USER_ID) values ('token', (select ID from USER whe
 # --- !Downs
 
 drop table "USER";
+drop table "AUTH_TOKEN";
