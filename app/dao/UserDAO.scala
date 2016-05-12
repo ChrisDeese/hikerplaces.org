@@ -20,6 +20,12 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
 
   def insert(user: User): Future[Unit] = db.run(Users += user).map { _ => () }
 
+  def getByAuthToken(token: String): Future[User] = db.run {
+    (for {
+    (a, u) <- AuthTokens join Users on (_.userId === _.id)
+    } yield u).result.head
+  }
+
   class UserTable(tag: Tag) extends Table[User](tag, "USER") {
 
     def id = column[Int]("ID", O.PrimaryKey)
