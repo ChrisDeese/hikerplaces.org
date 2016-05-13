@@ -32,6 +32,6 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     def name = column[String]("username")
     def password = column[String]("password")
 
-    def * = (id, name, password) <> (User.tupled, User.unapply _)
+    def * = (id, name, password) <> ((User.apply _).tupled, User.unapply _)
   }
 }
