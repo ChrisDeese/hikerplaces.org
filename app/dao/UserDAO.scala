@@ -26,12 +26,16 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     } yield u).result.head
   }
 
+  def getByUsername(username: String): Future[Option[User]] = db.run {
+    Users.filter(_.username === username).result.headOption
+  }
+
   class UserTable(tag: Tag) extends Table[User](tag, "user") {
 
     def id = column[Int]("id", O.PrimaryKey)
-    def name = column[String]("username")
+    def username = column[String]("username")
     def password = column[String]("password")
 
-    def * = (id, name, password) <> ((User.apply _).tupled, User.unapply _)
+    def * = (id, username, password) <> ((User.apply _).tupled, User.unapply _)
   }
 }

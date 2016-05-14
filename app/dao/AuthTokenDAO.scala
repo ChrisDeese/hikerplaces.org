@@ -15,7 +15,7 @@ trait AuthTokensComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
   class AuthTokenTable(tag: Tag) extends Table[AuthToken](tag, "auth_token") {
     def token = column[String]("token", O.PrimaryKey)
     def userId = column[Int]("user_id")
-    def * = (token, userId) <> (AuthToken.tupled, AuthToken.unapply _)
+    def * = (token, userId) <> ((AuthToken.apply _).tupled, AuthToken.unapply _)
   }
 }
 
