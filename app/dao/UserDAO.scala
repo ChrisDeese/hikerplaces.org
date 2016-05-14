@@ -30,7 +30,7 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
     Users.filter(_.username === username).result.headOption
   }
 
-  class UserTable(tag: Tag) extends Table[User](tag, "user") {
+  class UserTable(tag: Tag) extends Table[User](tag, "users") {
 
     def id = column[Int]("id", O.PrimaryKey)
     def username = column[String]("username")

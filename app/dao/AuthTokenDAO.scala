@@ -12,7 +12,7 @@ import scala.concurrent.Future
 trait AuthTokensComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
   import driver.api._
 
-  class AuthTokenTable(tag: Tag) extends Table[AuthToken](tag, "auth_token") {
+  class AuthTokenTable(tag: Tag) extends Table[AuthToken](tag, "auth_tokens") {
     def token = column[String]("token", O.PrimaryKey)
     def userId = column[Int]("user_id")
     def * = (token, userId) <> ((AuthToken.apply _).tupled, AuthToken.unapply _)
