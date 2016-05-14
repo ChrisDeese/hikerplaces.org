@@ -22,6 +22,13 @@ class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO) exten
     userDAO.all().map(users => Ok(Json.toJson(users)))
   }
 
+  def getUser(id: Int) = Action.async { implicit request =>
+    userDAO.getById(id).map {
+      case Some(user) => Ok(Json.toJson(user))
+      case None => NotFound("user not found")
+    }
+  }
+
   def login = Action.async(BodyParsers.parse.json) { implicit request =>
     case class LoginRequest(username: String, password: String)
 

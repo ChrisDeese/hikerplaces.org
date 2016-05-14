@@ -7,6 +7,8 @@ GET     /                           controllers.Application.index
 
 # User api
 GET     /api/users                  controllers.Application.listUsers
+GET     /api/users/:id              controllers.Application.getUser(id: Int)
+
 POST    /api/login                  controllers.Application.login
 
 # Map static resources from the /public folder to the /assets URL path
