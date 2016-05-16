@@ -20,7 +20,8 @@ trait AuthTokensComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
 }
 
 @Singleton()
-class AuthTokenDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
+class AuthTokenDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+  extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
   private val AuthTokens = TableQuery[AuthTokenTable]

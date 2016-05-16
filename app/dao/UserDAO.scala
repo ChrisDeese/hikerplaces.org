@@ -10,7 +10,8 @@ import slick.driver.JdbcProfile
 import scala.concurrent.Future
 
 @Singleton()
-class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
+class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+  extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
   import driver.api._
 
   private val Users = TableQuery[UserTable]
@@ -22,7 +23,7 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) 
 
   def getByAuthToken(token: String): Future[User] = db.run {
     (for {
-    (a, u) <- AuthTokens join Users on (_.userId === _.id)
+      (a, u) <- AuthTokens join Users on (_.userId === _.id)
     } yield u).result.head
   }
 
