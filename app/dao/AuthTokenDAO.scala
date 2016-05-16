@@ -5,11 +5,11 @@ import javax.inject.{Inject, Singleton}
 import models.AuthToken
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import slick.driver.JdbcProfile
+import util.MyPostgresDriver
 
 import scala.concurrent.Future
 
-trait AuthTokensComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
+trait AuthTokensComponent { self: HasDatabaseConfigProvider[MyPostgresDriver] =>
   import driver.api._
 
   class AuthTokenTable(tag: Tag) extends Table[AuthToken](tag, "auth_tokens") {
@@ -21,7 +21,7 @@ trait AuthTokensComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
 @Singleton()
 class AuthTokenDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-  extends AuthTokensComponent with HasDatabaseConfigProvider[JdbcProfile] {
+  extends AuthTokensComponent with HasDatabaseConfigProvider[MyPostgresDriver] {
   import driver.api._
 
   private val AuthTokens = TableQuery[AuthTokenTable]
