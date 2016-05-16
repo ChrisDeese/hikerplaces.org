@@ -1,5 +1,6 @@
 package models
 
+import com.vividsolutions.jts.geom.Point
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
@@ -41,3 +42,5 @@ object AuthToken {
     )
   }
 }
+
+case class Place(id: Int, name: String, geom: Point)

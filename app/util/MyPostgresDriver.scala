@@ -10,6 +10,7 @@ trait MyPostgresDriver extends ExPostgresDriver
                           with PgLTreeSupport
                           with PgRangeSupport
                           with PgHStoreSupport
+                          with PgPostGISSupport
                           with PgSearchSupport {
 
   override val pgjson = "jsonb"
@@ -22,7 +23,8 @@ trait MyPostgresDriver extends ExPostgresDriver
                              with RangeImplicits
                              with HStoreImplicits
                              with SearchImplicits
-                             with SearchAssistants {}
+                             with SearchAssistants
+                             with PostGISImplicits {}
 }
 
 object MyPostgresDriver extends MyPostgresDriver
