@@ -20,8 +20,8 @@ create table "places" (
 );
 
 insert into "users"("username", "password") values ('hikerbot', 'asdf');
-insert into "auth_token"("token", "user_id") values ('token', (select "id" from "users" where "username" = 'hikerbot'))
-insert into "places"("name", "geom") values ('Hawk Mountain Shelter', ST_GeomFromText('Point(34.666078 -84.136395)', 4326))
+insert into "auth_tokens"("token", "user_id") values ('token', (select "id" from "users" where "username" = 'hikerbot'));
+insert into "places"("name", "geom") values ('Hawk Mountain Shelter', ST_GeomFromText('Point(34.666078 -84.136395)', 4326));
 
 # --- !Downs
 
