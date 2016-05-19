@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import dao.{AuthTokenDAO, UserDAO}
+import dao.{AuthTokenDAO, PlaceDAO, UserDAO}
 import models.AuthToken
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsError, JsPath, Json, Reads}
@@ -11,7 +11,7 @@ import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
 
-class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO) extends Controller {
+class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, placeDAO: PlaceDAO) extends Controller {
 
   def index = Action.async { implicit request =>
     val futureInt = userDAO.all()
@@ -26,6 +26,13 @@ class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO) exten
     userDAO.getById(id).map {
       case Some(user) => Ok(Json.toJson(user))
       case None => NotFound("user not found")
+    }
+  }
+
+  def getPlace(id: Int) = Action.async { implicit request =>
+    placeDAO.getById(id).map {
+      case Some(place) => Ok(Json.toJson(place))
+      case None => NotFound("place not found")
     }
   }
 

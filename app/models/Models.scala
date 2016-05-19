@@ -44,3 +44,17 @@ object AuthToken {
 }
 
 case class Place(id: Int, name: String, geom: Point)
+
+object Place {
+  // todo: serialize/deserialize as geojson
+  implicit val placeWrites = new Writes[Place] {
+    def writes(place: Place) = Json.obj(
+      "id" -> place.id,
+      "name" -> place.name,
+      "geom" -> Json.obj(
+        "lat" -> place.geom.getX,
+        "lon" -> place.geom.getY
+      )
+    )
+  }
+}

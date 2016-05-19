@@ -21,6 +21,10 @@ class PlaceDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def insert(place: Place): Future[Unit] = db.run(Places += place).map { _ => () }
 
+  def getById(id: Int): Future[Option[Place]] = db.run {
+    Places.filter(_.id === id).result.headOption
+  }
+
   class PlaceTable(tag: Tag) extends Table[Place](tag, "places") {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
