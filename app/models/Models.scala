@@ -1,7 +1,8 @@
 package models
 
-import com.vividsolutions.jts.geom.Point
+import com.vividsolutions.jts.geom.{Coordinate, GeometryFactory, Point, PrecisionModel}
 import play.api.libs.json._
+import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 
 case class User(id: Int, username: String, password: String)
@@ -46,6 +47,8 @@ object AuthToken {
 case class Place(id: Int, name: String, geom: Point)
 
 object Place {
+  private final val SRID = 4326
+
   // todo: serialize/deserialize as geojson
   implicit val placeWrites = new Writes[Place] {
     def writes(place: Place) = Json.obj(
@@ -57,4 +60,15 @@ object Place {
       )
     )
   }
+
+  implicit val placeReads: Reads[Place] = (
+      ((JsPath \ "id").read[Int] or Reads.pure(0)) and
+      (JsPath \ "name").read[String] and
+      (JsPath \ "geom" \ "lat").read[Double] and
+      (JsPath \ "geom" \ "lon").read[Double]
+    )((id, name, lat, lon) => {
+      val geomFac = new GeometryFactory(new PrecisionModel(), SRID)
+      val point = geomFac.createPoint(new Coordinate(lat, lon))
+      Place(id, name, point)
+    })
 }

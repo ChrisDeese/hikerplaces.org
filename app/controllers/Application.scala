@@ -3,7 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import dao.{AuthTokenDAO, PlaceDAO, UserDAO}
-import models.AuthToken
+import models.{AuthToken, Place}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsError, JsPath, Json, Reads}
 import play.api.mvc.{Action, BodyParsers, Controller}
@@ -34,6 +34,19 @@ class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, place
       case Some(place) => Ok(Json.toJson(place))
       case None => NotFound("place not found")
     }
+  }
+
+  def addPlace() = Action.async(BodyParsers.parse.json) { implicit request =>
+    request.body.validate[Place].fold(
+      errors => {
+        Future(BadRequest(JsError.toJson(errors)))
+      },
+      place => {
+        placeDAO.insert(place).map { id =>
+          Ok(Json.toJson(place.copy(id=id)))
+        }
+      }
+    )
   }
 
   def login = Action.async(BodyParsers.parse.json) { implicit request =>

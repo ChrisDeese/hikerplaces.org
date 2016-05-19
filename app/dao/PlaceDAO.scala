@@ -19,7 +19,9 @@ class PlaceDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def all(): Future[Seq[Place]] = db.run(Places.result)
 
-  def insert(place: Place): Future[Unit] = db.run(Places += place).map { _ => () }
+  def insert(place: Place): Future[Int] = db.run {
+    (Places returning Places.map(_.id)) += place
+  }
 
   def getById(id: Int): Future[Option[Place]] = db.run {
     Places.filter(_.id === id).result.headOption
