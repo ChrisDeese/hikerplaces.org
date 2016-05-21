@@ -19,8 +19,8 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def all(): Future[Seq[User]] = db.run(Users.result)
 
-  def insert(user: User): Future[Try[Int]] = db.run {
-    ((Users returning Users.map(_.id)) += user).asTry
+  def insert(user: User): Future[Int] = db.run {
+    (Users returning Users.map(_.id)) += user
   }
 
   // todo make option

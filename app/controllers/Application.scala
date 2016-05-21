@@ -57,12 +57,12 @@ class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, place
         Future(BadRequest(JsError.toJson(errors)))
       },
       user => {
-        userDAO.insert(user).map {
-          case Success(id) => Ok(Json.toJson(user.copy(id=id)))
-          case Failure(ex: PSQLException) if ex.getSQLState == "23505" =>
-            // unique constraint violation
-            Conflict("username already exists")
-          case Failure(ex) => throw ex
+        userDAO.getByUsername(user.username).flatMap {
+          case Some(_) => Future(Conflict("username already exists"))
+          case None =>
+            userDAO.insert(user).map { id =>
+              Created(Json.toJson(user.copy(id=id)))
+            }
         }
       }
     )
