@@ -3,13 +3,15 @@ package controllers
 import javax.inject.Inject
 
 import dao.{AuthTokenDAO, PlaceDAO, UserDAO}
-import models.{AuthToken, Place}
+import models.{AuthToken, Place, User}
+import org.postgresql.util.PSQLException
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsError, JsPath, Json, Reads}
 import play.api.mvc.{Action, BodyParsers, Controller}
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, placeDAO: PlaceDAO) extends Controller {
 
@@ -44,6 +46,23 @@ class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, place
       place => {
         placeDAO.insert(place).map { id =>
           Ok(Json.toJson(place.copy(id=id)))
+        }
+      }
+    )
+  }
+
+  def signup() = Action.async(BodyParsers.parse.json) { implicit request =>
+    request.body.validate[User].fold(
+      errors => {
+        Future(BadRequest(JsError.toJson(errors)))
+      },
+      user => {
+        userDAO.insert(user).map {
+          case Success(id) => Ok(Json.toJson(user.copy(id=id)))
+          case Failure(ex: PSQLException) if ex.getSQLState == "23505" =>
+            // unique constraint violation
+            Conflict("username already exists")
+          case Failure(ex) => throw ex
         }
       }
     )

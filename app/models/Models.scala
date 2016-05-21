@@ -14,6 +14,12 @@ object User {
       "username" -> user.username
     )
   }
+
+  implicit val userReads: Reads[User] = (
+    ((JsPath \ "id").read[Int] or Reads.pure(0)) and
+    (JsPath \ "username").read[String] and
+    (JsPath \ "password").read[String]
+    )(User.apply _)
 }
 
 case class AuthToken(token: String, userId: Int)

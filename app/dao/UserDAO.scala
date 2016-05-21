@@ -4,10 +4,10 @@ import javax.inject.{Inject, Singleton}
 
 import models.User
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import util.MyPostgresDriver
 
 import scala.concurrent.Future
+import scala.util.Try
 
 @Singleton()
 class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
@@ -19,8 +19,11 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def all(): Future[Seq[User]] = db.run(Users.result)
 
-  def insert(user: User): Future[Unit] = db.run(Users += user).map { _ => () }
+  def insert(user: User): Future[Try[Int]] = db.run {
+    ((Users returning Users.map(_.id)) += user).asTry
+  }
 
+  // todo make option
   def getByAuthToken(token: String): Future[User] = db.run {
     (for {
       (a, u) <- AuthTokens join Users on (_.userId === _.id)
@@ -37,7 +40,7 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   class UserTable(tag: Tag) extends Table[User](tag, "users") {
 
-    def id = column[Int]("id", O.PrimaryKey)
+    def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def username = column[String]("username")
     def password = column[String]("password")
 

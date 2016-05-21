@@ -9,6 +9,7 @@ GET     /                           controllers.Application.index
 GET     /api/users                  controllers.Application.listUsers
 GET     /api/users/:id              controllers.Application.getUser(id: Int)
 
+POST    /api/users                  controllers.Application.signup
 POST    /api/login                  controllers.Application.login
 
 # Place api
