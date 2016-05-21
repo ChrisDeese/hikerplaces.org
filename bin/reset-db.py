@@ -19,7 +19,7 @@ UPS_MARKER = "# --- !Ups"
 DOWNS_MARKER = "# --- !Downs"
 
 if not os.path.exists(evolutions_path):
-    print('could not find evolutions script at: ' % evolutions_path)
+    print('could not find evolutions script at: %s' % evolutions_path)
     exit(1)
 
 with open(evolutions_path) as f:
