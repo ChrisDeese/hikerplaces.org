@@ -2,7 +2,7 @@
 
 create table "users" (
     "id" serial primary key,
-    "username" varchar not null,
+    "username" varchar not null unique,
     "password" varchar not null
 );
 
@@ -25,6 +25,6 @@ insert into "places"("name", "geom") values ('Hawk Mountain Shelter', ST_GeomFro
 
 # --- !Downs
 
-drop table "auth_tokens";
-drop table "users";
-drop table "places";
+drop table if exists "auth_tokens";
+drop table if exists "users";
+drop table if exists "places";
