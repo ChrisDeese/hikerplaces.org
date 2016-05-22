@@ -21,6 +21,7 @@ trait AuthTokensComponent { self: HasDatabaseConfigProvider[MyPostgresDriver] =>
 
 @Singleton()
 class AuthTokenDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+  // todo: replace me with oauth
   extends AuthTokensComponent with HasDatabaseConfigProvider[MyPostgresDriver] {
   import driver.api._
 

@@ -22,6 +22,7 @@ object User {
     )(User.apply _)
 }
 
+// todo: replace me with oauth
 case class AuthToken(token: String, userId: Int)
 
 object AuthToken {

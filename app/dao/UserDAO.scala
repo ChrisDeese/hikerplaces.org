@@ -24,10 +24,10 @@ class UserDAO @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
   // todo make option
-  def getByAuthToken(token: String): Future[User] = db.run {
+  def getByAuthToken(token: String): Future[Option[User]] = db.run {
     (for {
-      (a, u) <- AuthTokens join Users on (_.userId === _.id)
-    } yield u).result.head
+      (a, u) <- AuthTokens join Users on (_.userId === _.id) if a.token === token
+    } yield u).result.headOption
   }
 
   def getByUsername(username: String): Future[Option[User]] = db.run {

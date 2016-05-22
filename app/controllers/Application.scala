@@ -1,5 +1,7 @@
 package controllers
 
+import java.nio.charset.StandardCharsets
+import java.util.Base64
 import javax.inject.Inject
 
 import dao.{AuthTokenDAO, PlaceDAO, UserDAO}
@@ -7,7 +9,7 @@ import models.{AuthToken, Place, User}
 import org.postgresql.util.PSQLException
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json.{JsError, JsPath, Json, Reads}
-import play.api.mvc.{Action, BodyParsers, Controller}
+import play.api.mvc._
 import play.api.libs.functional.syntax._
 
 import scala.concurrent.Future
@@ -15,9 +17,35 @@ import scala.util.{Failure, Success}
 
 class Application @Inject() (userDAO: UserDAO, authTokenDAO: AuthTokenDAO, placeDAO: PlaceDAO) extends Controller {
 
-  def index = Action.async { implicit request =>
-    val futureInt = userDAO.all()
-    futureInt.map(users => Ok("number of users: " + users.length))
+  class UserRequest[A](val user: Option[User], request: Request[A]) extends WrappedRequest[A](request)
+
+  object UserAction extends ActionBuilder[UserRequest] with ActionTransformer[Request, UserRequest] {
+    def transform[A](request: Request[A]) = {
+      // todo: replace me with oauth
+      request.headers.get("Authorization").flatMap { authorization =>
+        authorization.split(" ").drop(1).headOption.flatMap { encoded =>
+          val decoded = new String(Base64.getDecoder.decode(encoded.getBytes(StandardCharsets.UTF_8)))
+          decoded.split(":").toList match {
+            case username :: token :: Nil => Some {
+              userDAO.getByAuthToken(token).map {
+                case Some(user) if user.username == username => new UserRequest(Option(user), request)
+                case _ => new UserRequest(None, request)
+              }
+            }
+            case _ => None
+          }
+        }
+      } match {
+        case Some(userRequest) => userRequest
+        case None => Future.successful(new UserRequest(None, request))
+      }
+    }
+  }
+
+  def index = UserAction.async { implicit request =>
+    //val futureInt = userDAO.all()
+    Future.successful(Ok(Json.toJson(request.user)))
+    //Future.successful(Ok(request.headers.toString))
   }
 
   def listUsers = Action.async { implicit request =>
