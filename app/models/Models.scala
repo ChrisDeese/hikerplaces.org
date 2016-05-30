@@ -66,3 +66,7 @@ object Place {
       Place(id, name, point)
     })
 }
+
+case class Article(id: Int, name: String, revisionId: Int)
+
+case class ArticleRevision(id: Int, text: String)
