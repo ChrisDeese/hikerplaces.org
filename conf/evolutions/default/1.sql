@@ -32,15 +32,19 @@ create table "articles" (
 );
 
 -- sample data
-insert into "users"("username", "password") values ('hikerbot', 'asdf');
-insert into "auth_tokens"("token", "user_id") values ('token', (select "id" from "users" where "username" = 'hikerbot'));
+with sample_user as (
+    insert into "users"("username", "password") values ('hikerbot', 'asdf') returning *
+)
+
+insert into "auth_tokens"("token", "user_id") values ('token', (select "id" from sample_user));
+
 insert into "places"("name", "geom") values ('Hawk Mountain Shelter', ST_GeomFromText('Point(34.666078 -84.136395)', 4326));
 
 with sample_revision as (
     insert into "article_revisions"("text") values ('this is some text') returning *
 )
 
-insert into "articles"("name", "revision_id") values ('Example', (select id from sample_revision));
+insert into "articles"("name", "revision_id") values ('Example', (select "id" from sample_revision));
 
 # --- !Downs
 
