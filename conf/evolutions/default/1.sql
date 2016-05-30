@@ -19,12 +19,33 @@ create table "places" (
   "geom" geometry(Point, 4326)
 );
 
+create table "article_revisions" (
+  "id" serial primary key,
+  "text" varchar not null
+);
+
+create table "articles" (
+  "id" serial primary key,
+  "name" varchar not null,
+  "revision_id" bigint not null,
+  foreign key ("revision_id") references "article_revisions"("id")
+);
+
+-- sample data
 insert into "users"("username", "password") values ('hikerbot', 'asdf');
 insert into "auth_tokens"("token", "user_id") values ('token', (select "id" from "users" where "username" = 'hikerbot'));
 insert into "places"("name", "geom") values ('Hawk Mountain Shelter', ST_GeomFromText('Point(34.666078 -84.136395)', 4326));
+
+with sample_revision as (
+    insert into "article_revisions"("text") values ('this is some text') returning *
+)
+
+insert into "articles"("name", "revision_id") values ('Example', (select id from sample_revision));
 
 # --- !Downs
 
 drop table if exists "auth_tokens";
 drop table if exists "users";
 drop table if exists "places";
+drop table if exists "articles";
+drop table if exists "article_revisions";
